@@ -6,9 +6,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ApiService {
-  static const String baseUrl = 'http://10.0.2.2:8080/api/v1';
+  static const String baseUrl = 'http://10.10.2.119:8080/api/v1';
   final Map<String, String> headers = {'Content-Type': 'application/json'};
-
 
   // Fetch all drives
   Future<List<dynamic>> fetchAllDrives() async {
@@ -20,10 +19,6 @@ class ApiService {
       throw Exception('Failed to load drives');
     }
   }
-
-  
-
-  
 
   // Fetch driver details by ID
   Future<Map<String, dynamic>> fetchDriverById(int driverId) async {
@@ -61,61 +56,59 @@ class ApiService {
 
   // Fetch reviews for a user
   Future<List<dynamic>> fetchUserReviews(int userId) async {
-  final response = await http.get(Uri.parse('$baseUrl/reviews/user/$userId'));
-  if (response.statusCode == 200) {
-    return jsonDecode(response.body); // Ensure this returns List<dynamic>
-  } else {
-    throw Exception("Failed to load user reviews: ${response.body}");
+    final response = await http.get(Uri.parse('$baseUrl/reviews/user/$userId'));
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body); // Ensure this returns List<dynamic>
+    } else {
+      throw Exception("Failed to load user reviews: ${response.body}");
+    }
   }
-}
-
 
   // Add a new car
   Future<void> addCar(Map<String, dynamic> carData) async {
-  final response = await http.post(
-    Uri.parse('$baseUrl/cars'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({
-      'manufacturer': carData['manufacturer'],
-      'model': carData['model'],
-      'number_of_seats': carData['number_of_seats'],
-      'color': carData['color'],
-      'licence_plate': carData['licence_plate'],
-      'userId': carData['userId'], // Add userId to the request body
-      'user': {'id': carData['userId']},
-    }),
-  );
+    final response = await http.post(
+      Uri.parse('$baseUrl/cars'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'manufacturer': carData['manufacturer'],
+        'model': carData['model'],
+        'number_of_seats': carData['number_of_seats'],
+        'color': carData['color'],
+        'licence_plate': carData['licence_plate'],
+        'userId': carData['userId'], // Add userId to the request body
+        'user': {'id': carData['userId']},
+      }),
+    );
 
-  if (response.statusCode != 200) {
-    throw Exception('Failed to add car: ${response.body}');
-  }
-}
-
-Future<Drive> getDriveDetails(int driveId) async {
-  final String url = '$baseUrl/drives/findDriveById/$driveId'; // Corrected path
-  try {
-    final response = await http.get(Uri.parse(url), headers: headers);
-
-    if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body);
-      return Drive.fromJson(jsonData);
-    } else if (response.statusCode == 404) {
-      throw Exception('Drive not found with ID: $driveId');
-    } else {
-      throw Exception('Failed to fetch drive details. Status: ${response.statusCode}, Body: ${response.body}');
+    if (response.statusCode != 200) {
+      throw Exception('Failed to add car: ${response.body}');
     }
-  } catch (error) {
-    throw Exception('Error fetching drive details: $error');
   }
-}
 
+  Future<Drive> getDriveDetails(int driveId) async {
+    final String url =
+        '$baseUrl/drives/findDriveById/$driveId'; // Corrected path
+    try {
+      final response = await http.get(Uri.parse(url), headers: headers);
 
-
-
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        return Drive.fromJson(jsonData);
+      } else if (response.statusCode == 404) {
+        throw Exception('Drive not found with ID: $driveId');
+      } else {
+        throw Exception(
+            'Failed to fetch drive details. Status: ${response.statusCode}, Body: ${response.body}');
+      }
+    } catch (error) {
+      throw Exception('Error fetching drive details: $error');
+    }
+  }
 
   // Fetch cars for a user
   Future<List<dynamic>> fetchUserCars(int userId) async {
-    final response = await http.get(Uri.parse('$baseUrl/findCarByUserId/$userId'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/findCarByUserId/$userId'));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
@@ -125,106 +118,97 @@ Future<Drive> getDriveDetails(int driveId) async {
 
   // Register user
   Future<void> registerUser(
-  String email,
-  String password,
-  String name,
-  String firstName,
-  String phone,
-  String role,
-) async {
-  final response = await http.post(
-    Uri.parse('$baseUrl/user/register'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({
-      'email': email,
-      'password': password,
-      'name': name,
-      'firstName': firstName,
-      'phone': phone,
-      'role': role,
-    }),
-  );
-
-  if (response.statusCode != 201) {
-    throw Exception("Failed to register: ${response.body}");
+    String email,
+    String password,
+    String name,
+    String firstName,
+    String phone,
+    String role,
+  ) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/register'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        'name': name,
+        'firstName': firstName,
+        'phone': phone,
+        'role': role,
+      }),
+    );
   }
-}
-
 
   // Login user
   Future<User> loginUser(String email, String password) async {
-  final response = await http.post(
-    Uri.parse('$baseUrl/user/login?email=$email&password=$password'), // Envoyer comme paramètres URL
-    headers: {'Content-Type': 'application/json'},
-  );
+    final response = await http.post(
+      Uri.parse(
+          '$baseUrl/user/login?email=$email&password=$password'), // Envoyer comme paramètres URL
+      headers: {'Content-Type': 'application/json'},
+    );
 
-  if (response.statusCode == 200) {
-    return User.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception("Failed to login: ${response.body}");
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception("Failed to login: ${response.body}");
+    }
   }
-}
 
+  Future<void> createReview(int userId, int note, String message) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/reviews'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'user': {
+          'id': userId
+        }, // Correctly map the user as an object with an ID
+        'note': note,
+        'message': message,
+      }),
+    );
 
-
-
-Future<void> createReview(int userId, int note, String message) async {
-  final response = await http.post(
-    Uri.parse('$baseUrl/reviews'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({
-      'user': {'id': userId}, // Correctly map the user as an object with an ID
-      'note': note,
-      'message': message,
-    }),
-  );
-
-  if (response.statusCode != 201) {
-    throw Exception("Failed to create review: ${response.body}");
+    if (response.statusCode != 201) {
+      throw Exception("Failed to create review: ${response.body}");
+    }
   }
-}
-
 
 // Fetch average note for a driver
-Future<double> getAverageNoteByDriverId(int driverId) async {
-  final response =
-      await http.get(Uri.parse('$baseUrl/reviews/user/$driverId/average-note'));
-  if (response.statusCode == 200) {
-    return double.tryParse(response.body) ?? 0.0;
-  } else {
-    throw Exception('Failed to fetch average note');
+  Future<double> getAverageNoteByDriverId(int driverId) async {
+    final response = await http
+        .get(Uri.parse('$baseUrl/reviews/user/$driverId/average-note'));
+    if (response.statusCode == 200) {
+      return double.tryParse(response.body) ?? 0.0;
+    } else {
+      throw Exception('Failed to fetch average note');
+    }
   }
-}
 
-Future<User> getDriverById(int driverId) async {
+  Future<User> getDriverById(int driverId) async {
     final response = await http.get(Uri.parse('$baseUrl/user/$driverId'));
     if (response.statusCode == 200) {
       return User.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to fetch driver details');
     }
-}
+  }
 
 // Fetch reservations by drive ID
-Future<List<Reservation>> getReservationsByDriveId(int driveId) async {
-  final String url = '$baseUrl/drives/drive/$driveId/reservations'; // Corrected path
-  try {
-    final response = await http.get(Uri.parse(url), headers: headers);
+  Future<List<Reservation>> getReservationsByDriveId(int driveId) async {
+    final String url =
+        '$baseUrl/drives/drive/$driveId/reservations'; // Corrected path
+    try {
+      final response = await http.get(Uri.parse(url), headers: headers);
 
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonData = jsonDecode(response.body);
-      return jsonData.map((data) => Reservation.fromJson(data)).toList();
-    } else {
-      throw Exception('Failed to fetch reservations for drive ID $driveId');
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonData = jsonDecode(response.body);
+        return jsonData.map((data) => Reservation.fromJson(data)).toList();
+      } else {
+        throw Exception('Failed to fetch reservations for drive ID $driveId');
+      }
+    } catch (error) {
+      throw Exception('Error fetching reservations: $error');
     }
-  } catch (error) {
-    throw Exception('Error fetching reservations: $error');
   }
-}
-
-
-
-
 
 // Create a new drive.
   Future<void> createDrive(
@@ -268,34 +252,30 @@ Future<List<Reservation>> getReservationsByDriveId(int driveId) async {
   }
 
 // Fonction pour récupérer tous les drives créés par un driver
-Future<List<Drive>> getDrivesByDriver(int driverId) async {
-  final String url = '$baseUrl/drives/findListDriveByUserId/$driverId';
+  Future<List<Drive>> getDrivesByDriver(int driverId) async {
+    final String url = '$baseUrl/drives/findListDriveByUserId/$driverId';
 
-  try {
-    print("Request URL: $url");
-    final response = await http.get(Uri.parse(url), headers: headers);
+    try {
+      print("Request URL: $url");
+      final response = await http.get(Uri.parse(url), headers: headers);
 
-    if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
 
-      if (jsonData is List) {
-        return jsonData.map((data) => Drive.fromJson(data)).toList();
+        if (jsonData is List) {
+          return jsonData.map((data) => Drive.fromJson(data)).toList();
+        } else {
+          throw Exception("Unexpected response format");
+        }
       } else {
-        throw Exception("Unexpected response format");
+        throw Exception(
+            "Failed to fetch drives. Status code: ${response.statusCode}");
       }
-    } else {
-      throw Exception("Failed to fetch drives. Status code: ${response.statusCode}");
+    } catch (error) {
+      print("Error while fetching drives: $error");
+      throw Exception("Error fetching drives: $error");
     }
-  } catch (error) {
-    print("Error while fetching drives: $error");
-    throw Exception("Error fetching drives: $error");
   }
-}
-
-
-
-
-
 
 // Update reservation status
   Future<void> updateReservationStatus(int reservationId, String status) async {
@@ -337,55 +317,55 @@ Future<List<Drive>> getDrivesByDriver(int driverId) async {
   }
 
   Future<void> createReservation(int userId, int driveId, int seats) async {
-  final url = Uri.parse('$baseUrl/reservations'); // URL for creating reservation
+    final url =
+        Uri.parse('$baseUrl/reservations'); // URL for creating reservation
 
-  final reservationData = {
-    'userId': userId,
-    'driveId': driveId,
-    'seats': seats,
-  };
+    final reservationData = {
+      'userId': userId,
+      'driveId': driveId,
+      'seats': seats,
+    };
 
-  try {
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(reservationData),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(reservationData),
+      );
 
-    // Handle responses properly
-    if (response.statusCode == 201 || response.statusCode == 200) {
-      print("Reservation created successfully.");
-    } else if (response.statusCode == 400) {
-      throw Exception('Bad request: ${response.body}');
-    } else if (response.statusCode == 404) {
-      throw Exception('Drive or user not found: ${response.body}');
-    } else {
-      throw Exception('Failed to create reservation: ${response.body}');
+      // Handle responses properly
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        print("Reservation created successfully.");
+      } else if (response.statusCode == 400) {
+        throw Exception('Bad request: ${response.body}');
+      } else if (response.statusCode == 404) {
+        throw Exception('Drive or user not found: ${response.body}');
+      } else {
+        throw Exception('Failed to create reservation: ${response.body}');
+      }
+    } catch (e) {
+      // Catch and rethrow exceptions with detailed error messages
+      throw Exception('Error creating reservation: $e');
     }
-  } catch (e) {
-    // Catch and rethrow exceptions with detailed error messages
-    throw Exception('Error creating reservation: $e');
   }
-}
 
+  Future<void> logout(String email) async {
+    final url = Uri.parse('$baseUrl/user/logout');
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email}),
+      );
 
-Future<void> logout(String email) async {
-  final url = Uri.parse('$baseUrl/user/logout');
-  try {
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email}),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to logout: ${response.body}');
+      if (response.statusCode != 200) {
+        throw Exception('Failed to logout: ${response.body}');
+      }
+      print("Logout successful.");
+    } catch (e) {
+      throw Exception('Error logging out: $e');
     }
-    print("Logout successful.");
-  } catch (e) {
-    throw Exception('Error logging out: $e');
   }
-}
 
   // Reservation APIs
   Future<List<Reservation>> getReservationsByUserId(int userId) async {
@@ -441,10 +421,4 @@ Future<void> logout(String email) async {
       throw Exception('Error fetching conversation: $error');
     }
   }
-
-  
-
-  
-
-
 }

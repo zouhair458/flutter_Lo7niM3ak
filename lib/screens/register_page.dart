@@ -26,75 +26,109 @@ class _RegisterPageState extends State<RegisterPage> {
       _isLoading = true;
     });
 
-    try {
-      await widget.apiService.registerUser(
-        _emailController.text,
-        _passwordController.text,
-        _nameController.text,
-        _firstNameController.text,
-        _phoneController.text,
-        _selectedRole,
-      );
+    await widget.apiService.registerUser(
+      _emailController.text,
+      _passwordController.text,
+      _nameController.text,
+      _firstNameController.text,
+      _phoneController.text,
+      _selectedRole.toLowerCase(), // Convert to lowercase before sending to API
+    );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Registration successful! Please log in.")),
-      );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginPage(apiService: widget.apiService),
+      ),
+    );
 
-      // Redirect to LoginPage
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginPage(apiService: widget.apiService),
-        ),
-      );
-    
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Register"),
-        backgroundColor: Colors.blueAccent,
+        title: const Text("Register", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   TextField(
                     controller: _emailController,
-                    decoration: const InputDecoration(labelText: "Email"),
+                    decoration: InputDecoration(
+                      labelText: "Email",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                    ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(labelText: "Password"),
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                    ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: _nameController,
-                    decoration: const InputDecoration(labelText: "Name"),
+                    decoration: InputDecoration(
+                      labelText: "Name",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                    ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: _firstNameController,
-                    decoration: const InputDecoration(labelText: "First Name"),
+                    decoration: InputDecoration(
+                      labelText: "First Name",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                    ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: _phoneController,
-                    decoration: const InputDecoration(labelText: "Phone"),
+                    decoration: InputDecoration(
+                      labelText: "Phone",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                    ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     value: _selectedRole,
                     items: ['Passenger', 'Driver']
@@ -108,12 +142,30 @@ class _RegisterPageState extends State<RegisterPage> {
                         _selectedRole = value!;
                       });
                     },
-                    decoration: const InputDecoration(labelText: "Role"),
+                    decoration: InputDecoration(
+                      labelText: "Role",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                    ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: _registerUser,
-                    child: const Text("Register"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      "Register",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                   ),
                 ],
               ),

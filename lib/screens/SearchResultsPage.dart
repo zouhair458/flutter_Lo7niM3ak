@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/DriveModel.dart';
 import '../services/ApiService.dart';
-import 'DriveDetailsPage.dart'; // Import de la page des détails
-import 'ReservationConfirmationPage.dart'; // Import de la page de confirmation
+import 'DriveDetailsPage.dart';
+import 'ReservationConfirmationPage.dart';
 
 class SearchResultsPage extends StatefulWidget {
   final String startLocation;
@@ -67,9 +67,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         final destinationMatches = drive.destination
             .toLowerCase()
             .contains(widget.endLocation.toLowerCase());
-        final dateMatches =
-            drive.deptime.isAfter(widget.date.subtract(const Duration(days: 1))) &&
-                drive.deptime.isBefore(widget.date.add(const Duration(days: 1)));
+        final dateMatches = drive.deptime
+                .isAfter(widget.date.subtract(const Duration(days: 1))) &&
+            drive.deptime.isBefore(widget.date.add(const Duration(days: 1)));
         final seatsMatches = drive.seating >= widget.seats;
 
         return pickupMatches &&
@@ -80,13 +80,75 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     });
   }
 
+  void _showDashboardMenu() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _menuOption(context, Icons.chat, "Mes Conversations", () {
+                Navigator.pushNamed(context, '/my-conversations',
+                    arguments: widget.userId);
+              }),
+              _menuOption(context, Icons.calendar_today, "Mes Réservations",
+                  () {
+                Navigator.pushNamed(context, '/my-reservations',
+                    arguments: widget.userId);
+              }),
+              _menuOption(context, Icons.person, "Profil", () {
+                Navigator.pushNamed(context, '/profile',
+                    arguments: widget.userId);
+              }),
+              _menuOption(context, Icons.logout, "Déconnexion", () {
+                Navigator.pushReplacementNamed(context, '/');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Déconnecté avec succès !'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _menuOption(
+      BuildContext context, IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.black),
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      onTap: () {
+        Navigator.of(context).pop();
+        onTap();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     _filterDrives();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Résultats'),
+        title: const Text(
+          'Résultats',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -106,29 +168,28 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           horizontal: 16, vertical: 8),
                       elevation: 4,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: const BorderSide(color: Colors.blue, width: 2),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ListTile(
                             title: Text(
-                              '${drive.pickup} -> ${drive.destination}',
+                              '${drive.pickup} → ${drive.destination}',
                               style: const TextStyle(
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.black87,
                               ),
                             ),
                             subtitle: Text(
                               '${drive.price.toStringAsFixed(2)} MAD',
                               style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.blue,
+                                fontSize: 16,
+                                color: Color(0xFF4CAF50),
                               ),
                             ),
                             onTap: () {
-                              // Naviguer vers DriveDetailsPage avec l'objet drive
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -141,25 +202,24 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           ),
                           const Divider(),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(12.0),
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  // Naviguer vers ReservationConfirmationPage
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
                                           ReservationConfirmationPage(
-                                        drive: drive, // Passer l'objet drive
+                                        drive: drive,
                                         userId: widget.userId,
                                       ),
                                     ),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
+                                  backgroundColor: Colors.black,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 24, vertical: 12),
                                   shape: RoundedRectangleBorder(
@@ -170,7 +230,8 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                                   'Réserver',
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
                                 ),
                               ),
                             ),
@@ -180,6 +241,12 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                     );
                   },
                 ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showDashboardMenu,
+        backgroundColor: Colors.black,
+        child: const Icon(Icons.menu, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

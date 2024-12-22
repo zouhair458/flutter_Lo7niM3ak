@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../models/DriveModel.dart';
-import '../services/ApiService.dart'; // Import your ApiService
+import '../services/ApiService.dart';
 
 class ReservationConfirmationPage extends StatefulWidget {
-  final Drive drive; // Les informations du covoiturage
-  final int userId; // ID de l'utilisateur connecté
+  final Drive drive;
+  final int userId;
 
   const ReservationConfirmationPage({
     Key? key,
@@ -19,18 +19,16 @@ class ReservationConfirmationPage extends StatefulWidget {
 
 class _ReservationConfirmationPageState
     extends State<ReservationConfirmationPage> {
-  final ApiService _apiService = ApiService(); // Initialize ApiService
-  int selectedSeats = 1; // Le nombre de sièges sélectionné par le passager
+  final ApiService _apiService = ApiService();
+  int selectedSeats = 1;
   double totalPrice = 0;
 
   @override
   void initState() {
     super.initState();
-    // Initialiser le prix total en fonction du nombre de sièges
     totalPrice = widget.drive.price * selectedSeats;
   }
 
-  // Met à jour le prix total en fonction du nombre de sièges
   void _updateTotalPrice(int seats) {
     setState(() {
       selectedSeats = seats;
@@ -38,27 +36,22 @@ class _ReservationConfirmationPageState
     });
   }
 
-  // Confirmer la réservation
   Future<void> _confirmReservation() async {
     try {
-      // Call the API to create the reservation
       await _apiService.createReservation(
-        widget.userId, // User ID passed to the page
-        widget.drive.id, // Drive ID
-        selectedSeats, // Number of seats reserved
+        widget.userId,
+        widget.drive.id,
+        selectedSeats,
       );
 
-      // Show a success message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Réservation confirmée!')),
+        const SnackBar(content: Text('Reservation confirmed!')),
       );
 
-      // Navigate back to the previous page
       Navigator.pop(context);
     } catch (e) {
-      // Show an error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur lors de la réservation: $e')),
+        SnackBar(content: Text('Error during reservation: $e')),
       );
     }
   }
@@ -67,17 +60,26 @@ class _ReservationConfirmationPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Confirmation de Réservation'),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.black,
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 70),
+              const SizedBox(height: 30),
+              // Title above the card
+              Text(
+                'Reservation Confirmation',
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 20), // Add spacing between title and card
               Card(
                 elevation: 8,
                 shape: RoundedRectangleBorder(
@@ -89,25 +91,26 @@ class _ReservationConfirmationPageState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${widget.drive.pickup} -> ${widget.drive.destination}',
+                        '${widget.drive.pickup} → ${widget.drive.destination}',
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blueAccent,
+                          color: Colors.black,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
                       Text(
-                        'Date et Heure : ${widget.drive.deptime}',
-                        style: const TextStyle(fontSize: 16),
+                        'Date and Time: ${widget.drive.deptime}',
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.grey),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Flexible(
                             child: Text(
-                              'Sélectionnez le nombre de sièges',
+                              'Select the number of seats',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -127,11 +130,11 @@ class _ReservationConfirmationPageState
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                        color: Colors.blue, width: 2),
+                                        color: Colors.black, width: 2),
                                   ),
                                   child: const Icon(
                                     Icons.remove,
-                                    color: Colors.blue,
+                                    color: Colors.black,
                                   ),
                                 ),
                               ),
@@ -141,7 +144,7 @@ class _ReservationConfirmationPageState
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.blueAccent,
+                                  color: Colors.black,
                                 ),
                               ),
                               const SizedBox(width: 15),
@@ -155,11 +158,11 @@ class _ReservationConfirmationPageState
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                        color: Colors.blue, width: 2),
+                                        color: Colors.black, width: 2),
                                   ),
                                   child: const Icon(
                                     Icons.add,
-                                    color: Colors.blue,
+                                    color: Colors.black,
                                   ),
                                 ),
                               ),
@@ -169,11 +172,11 @@ class _ReservationConfirmationPageState
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        'Prix total: ${totalPrice.toStringAsFixed(2)} MAD',
+                        'Total Price: ${totalPrice.toStringAsFixed(2)} MAD',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blueAccent,
+                          color: Colors.black,
                         ),
                       ),
                       const SizedBox(height: 30),
@@ -181,7 +184,7 @@ class _ReservationConfirmationPageState
                         child: ElevatedButton(
                           onPressed: _confirmReservation,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: Colors.black,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 14),
                             shape: RoundedRectangleBorder(
@@ -189,7 +192,7 @@ class _ReservationConfirmationPageState
                             ),
                           ),
                           child: const Text(
-                            'Confirmer',
+                            'Confirm',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),

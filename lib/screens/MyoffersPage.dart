@@ -6,7 +6,7 @@ import '../services/ApiService.dart';
 
 class MyOffersPage extends StatefulWidget {
   final int userId;
-  final String role; // Peut être "Driver" ou "Passenger"
+  final String role; // Can be "Driver" or "Passenger"
 
   const MyOffersPage({Key? key, required this.userId, required this.role}) : super(key: key);
 
@@ -35,15 +35,15 @@ class _MyOffersPageState extends State<MyOffersPage> {
     try {
       List<Drive>? drives;
       if (widget.role == "Driver") {
-        // Récupérer les offres créées par le conducteur
+        // Get the offers created by the driver
         drives = await _apiService.getDrivesByDriver(widget.userId);
       } else {
-        // Récupérer les offres disponibles pour les passagers
-        drives = (await _apiService.fetchAllDrives()).cast<Drive>(); // Remplacez par une API pour les passagers
+        // Get the available offers for passengers
+        drives = (await _apiService.fetchAllDrives()).cast<Drive>(); // Replace with API for passengers
       }
 
       setState(() {
-        _drives = (drives?..sort((a, b) => b.deptime.compareTo(a.deptime)))!; // Trier par date décroissante
+        _drives = (drives?..sort((a, b) => b.deptime.compareTo(a.deptime)))!; // Sort by descending date
         _isLoading = false;
       });
     } catch (error) {
@@ -66,7 +66,7 @@ class _MyOffersPageState extends State<MyOffersPage> {
       MaterialPageRoute(
         builder: (context) => OfferDetailsPage(
           driveId: drive.id,
-          driveDetails: '${drive.pickup} → ${drive.destination}',
+          driveDetails: '${drive.destination} → ${drive.pickup}', // Reverse the order
           basePrice: drive.price,
           driverId: drive.driverId ?? 0,
         ),
@@ -105,7 +105,7 @@ class _MyOffersPageState extends State<MyOffersPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${drive.pickup} → ${drive.destination}',
+                                    '${drive.destination} → ${drive.pickup}', // Reverse the order here
                                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: 8),

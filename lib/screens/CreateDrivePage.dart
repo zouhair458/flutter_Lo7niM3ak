@@ -73,8 +73,7 @@ class _CreateDrivePageState extends State<CreateDrivePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Drive'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.black,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -82,93 +81,158 @@ class _CreateDrivePageState extends State<CreateDrivePage> {
           key: _formKey,
           child: ListView(
             children: [
-              // Pickup Location Dropdown
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Pickup Location'),
-                value: _pickupLocation,
-                items: cities.map((city) {
-                  return DropdownMenuItem<String>(
-                    value: city,
-                    child: Text(city),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _pickupLocation = newValue;
-                  });
-                },
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Please select a pickup location'
-                    : null,
+              const Padding(
+                padding: EdgeInsets.only(bottom: 16.0),
+                child: Text(
+                  'Create New Drive',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
               ),
 
-              const SizedBox(height: 16),
+              // Pickup Location Dropdown
+              Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(
+                      labelText: 'Pickup Location',
+                      border: InputBorder.none,
+                    ),
+                    value: _pickupLocation,
+                    items: cities.map((city) {
+                      return DropdownMenuItem<String>(
+                        value: city,
+                        child: Text(city),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _pickupLocation = newValue;
+                      });
+                    },
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Please select a pickup location'
+                        : null,
+                  ),
+                ),
+              ),
 
               // Destination Location Dropdown
-              DropdownButtonFormField<String>(
-                decoration:
-                    const InputDecoration(labelText: 'Destination Location'),
-                value: _destinationLocation,
-                items: cities.map((city) {
-                  return DropdownMenuItem<String>(
-                    value: city,
-                    child: Text(city),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _destinationLocation = newValue;
-                  });
-                },
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Please select a destination location'
-                    : null,
+              Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(
+                      labelText: 'Destination Location',
+                      border: InputBorder.none,
+                    ),
+                    value: _destinationLocation,
+                    items: cities.map((city) {
+                      return DropdownMenuItem<String>(
+                        value: city,
+                        child: Text(city),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _destinationLocation = newValue;
+                      });
+                    },
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Please select a destination location'
+                        : null,
+                  ),
+                ),
               ),
-
-              const SizedBox(height: 16),
 
               // Price input
-              TextFormField(
-                controller: _priceController,
-                decoration:
-                    const InputDecoration(labelText: 'Base Price (MAD)'),
-                keyboardType: TextInputType.number,
-                validator: (value) =>
-                    value == null || double.tryParse(value) == null
-                        ? 'Please enter a valid price'
-                        : null,
+              Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _priceController,
+                    decoration: const InputDecoration(
+                      labelText: 'Base Price (MAD)',
+                      border: InputBorder.none,
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) =>
+                        value == null || double.tryParse(value) == null
+                            ? 'Please enter a valid price'
+                            : null,
+                  ),
+                ),
               ),
-
-              const SizedBox(height: 16),
 
               // Available Seats input
-              TextFormField(
-                controller: _seatsController,
-                decoration: const InputDecoration(labelText: 'Available Seats'),
-                keyboardType: TextInputType.number,
-                validator: (value) =>
-                    value == null || int.tryParse(value) == null
-                        ? 'Please enter a valid number of seats'
-                        : null,
+              Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _seatsController,
+                    decoration: const InputDecoration(
+                      labelText: 'Available Seats',
+                      border: InputBorder.none,
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) =>
+                        value == null || int.tryParse(value) == null
+                            ? 'Please enter a valid number of seats'
+                            : null,
+                  ),
+                ),
               ),
-
-              const SizedBox(height: 16),
 
               // Description input
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
-                maxLines: 3,
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Please enter a description'
-                    : null,
+              Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _descriptionController,
+                    decoration: const InputDecoration(
+                      labelText: 'Description',
+                      border: InputBorder.none,
+                    ),
+                    maxLines: 3,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Please enter a description'
+                        : null,
+                  ),
+                ),
               ),
-
-              const SizedBox(height: 16),
 
               // Date Picker
               ListTile(
-                title: Text('Date: ${_selectedDate.toLocal()}'.split(' ')[0]),
+                title: Text('Date: ${_selectedDate.toLocal()}'.split(' ')[0],
+                    style: const TextStyle(fontSize: 16)),
                 trailing: const Icon(Icons.calendar_today),
                 onTap: () async {
                   DateTime? picked = await showDatePicker(
@@ -190,7 +254,20 @@ class _CreateDrivePageState extends State<CreateDrivePage> {
               // Create Drive Button
               ElevatedButton(
                 onPressed: _createDrive,
-                child: const Text('Create Drive'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  backgroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Create Drive',
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
               ),
             ],
           ),

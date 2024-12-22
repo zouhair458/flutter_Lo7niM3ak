@@ -7,7 +7,7 @@ import 'package:flutter_application_1/services/ApiService.dart';
 import 'package:http/http.dart' as http;
 
 class ReservationService {
-  static const String baseUrl = 'http://10.0.2.2:8080/api/v1';
+  static const String baseUrl = 'http://10.10.2.119:8080/api/v1';
   final Map<String, String> headers = {'Content-Type': 'application/json'};
 
   ReservationService(ApiService apiService);

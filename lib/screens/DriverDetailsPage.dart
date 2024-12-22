@@ -13,8 +13,8 @@ class DriverDetailsPage extends StatefulWidget {
 
 class _DriverDetailsPageState extends State<DriverDetailsPage> {
   final ApiService _apiService = ApiService();
-  double? avgNote; // To store the average note
-  List<dynamic>? reviews; // To store reviews for the driver
+  double? avgNote;
+  List<dynamic>? reviews;
 
   @override
   void initState() {
@@ -24,11 +24,8 @@ class _DriverDetailsPageState extends State<DriverDetailsPage> {
 
   Future<void> fetchDriverDetails() async {
     try {
-      // Fetch average note
       final fetchedAvgNote =
           await _apiService.getAverageNoteByDriverId(widget.driver.id);
-
-      // Fetch reviews
       final fetchedReviews =
           await _apiService.fetchUserReviews(widget.driver.id);
 
@@ -48,7 +45,8 @@ class _DriverDetailsPageState extends State<DriverDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Driver Details"),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.black,
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -56,9 +54,13 @@ class _DriverDetailsPageState extends State<DriverDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const CircleAvatar(
-                radius: 60,
-                child: Icon(Icons.person, size: 60),
+              Center(
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundColor: Colors.grey[200],
+                  child:
+                      const Icon(Icons.person, size: 60, color: Colors.black),
+                ),
               ),
               const SizedBox(height: 20),
               Text(
@@ -66,15 +68,29 @@ class _DriverDetailsPageState extends State<DriverDetailsPage> {
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               if (avgNote != null)
-                Text(
-                  "Average Rating: ${avgNote!.toStringAsFixed(1)} ⭐",
-                  style: const TextStyle(fontSize: 18, color: Colors.grey),
+                Center(
+                  child: Text(
+                    "Average Rating: ${avgNote!.toStringAsFixed(1)} ⭐",
+                    style: const TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
                 ),
               const SizedBox(height: 20),
+              const Divider(),
+              const Text(
+                "Driver Information",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 10),
               _buildDetailTile("Email", widget.driver.email),
               _buildDetailTile("Phone", widget.driver.phone),
               _buildDetailTile("Role", widget.driver.role),
@@ -82,13 +98,20 @@ class _DriverDetailsPageState extends State<DriverDetailsPage> {
               const Divider(),
               const Text(
                 "Reviews",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
               const SizedBox(height: 10),
               if (reviews != null && reviews!.isNotEmpty)
                 ...reviews!.map((review) => _buildReviewTile(review))
               else
-                const Text("No reviews available for this driver."),
+                const Text(
+                  "No reviews available for this driver.",
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
             ],
           ),
         ),
@@ -98,15 +121,22 @@ class _DriverDetailsPageState extends State<DriverDetailsPage> {
 
   Widget _buildDetailTile(String title, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.black,
+            ),
           ),
-          Text(value, style: const TextStyle(color: Colors.black87)),
+          Text(
+            value,
+            style: const TextStyle(color: Colors.black87, fontSize: 16),
+          ),
         ],
       ),
     );
@@ -115,12 +145,28 @@ class _DriverDetailsPageState extends State<DriverDetailsPage> {
   Widget _buildReviewTile(dynamic review) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ListTile(
-        title: Text(
-          "Rating: ${review['note']} ⭐",
-          style: const TextStyle(fontWeight: FontWeight.bold),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Rating: ${review['note']} ⭐",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              review['message'],
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+          ],
         ),
-        subtitle: Text(review['message']),
       ),
     );
   }

@@ -29,7 +29,6 @@ class _PaymentPopupState extends State<PaymentPopup> {
     });
 
     try {
-      // Créez un PaymentIntent depuis votre backend
       final clientSecret = await widget.reservationService
           .createPaymentIntent(widget.reservation.id);
 
@@ -42,17 +41,17 @@ class _PaymentPopupState extends State<PaymentPopup> {
           ),
         );
 
-        // Affichez le formulaire de paiement
         await Stripe.instance.presentPaymentSheet();
-        Navigator.pop(context, true); // Ferme le pop-up après succès
+        Navigator.pop(context, true); // Close the popup after success
       } else {
         setState(() {
-          errorMessage = 'Erreur lors de la récupération du client_secret.';
+          errorMessage = 'Error fetching client secret.';
         });
       }
     } catch (e) {
+      print('Payment initialization error: $e');
       setState(() {
-        errorMessage = 'Paiement annulé ou échoué.';
+        errorMessage = 'Payment canceled or failed. Reason: $e';
       });
     } finally {
       setState(() {

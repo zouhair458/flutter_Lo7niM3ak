@@ -93,43 +93,65 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat with ${widget.receiverName}'),
+        backgroundColor: Colors.black,
+        centerTitle: true,
       ),
       body: Column(
         children: [
+          // Title for the chat
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Chat ${widget.receiverName}',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ),
           // Messages List
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    controller: _scrollController,
-                    itemCount: _messages.length,
-                    itemBuilder: (context, index) {
-                      final message = _messages[index];
-                      final isSentByUser = message.senderId == widget.senderId;
-
-                      return Align(
-                        alignment: isSentByUser
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                            horizontal: 16.0,
-                          ),
-                          padding: const EdgeInsets.all(12.0),
-                          decoration: BoxDecoration(
-                            color: isSentByUser
-                                ? Colors.blue[100]
-                                : Colors.grey[200],
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Text(message.content),
+                : _messages.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No messages yet.',
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
                         ),
-                      );
-                    },
-                  ),
+                      )
+                    : ListView.builder(
+                        controller: _scrollController,
+                        itemCount: _messages.length,
+                        itemBuilder: (context, index) {
+                          final message = _messages[index];
+                          final isSentByUser =
+                              message.senderId == widget.senderId;
+
+                          return Align(
+                            alignment: isSentByUser
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 8.0,
+                                horizontal: 16.0,
+                              ),
+                              padding: const EdgeInsets.all(12.0),
+                              decoration: BoxDecoration(
+                                color: isSentByUser
+                                    ? Colors.blue[100]
+                                    : Colors.grey[200],
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Text(message.content),
+                            ),
+                          );
+                        },
+                      ),
           ),
+          // Message input field and send button
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -139,6 +161,9 @@ class _ChatPageState extends State<ChatPage> {
                     controller: _messageController,
                     decoration: const InputDecoration(
                       hintText: 'Type a message...',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
                     ),
                   ),
                 ),

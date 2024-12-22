@@ -4,7 +4,7 @@ import '../models/Message.dart';
 import '../models/user_model.dart';
 
 class ChatService {
-  static const String baseUrl = 'http://10.0.2.2:8080/api/chat';
+  static const String baseUrl = 'http://10.10.2.119:8080/api/chat';
   final Map<String, String> headers = {'Content-Type': 'application/json'};
 
   // Fetch user details by ID

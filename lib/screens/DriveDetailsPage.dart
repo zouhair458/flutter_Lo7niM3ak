@@ -27,11 +27,13 @@ class _DriveDetailsPageState extends State<DriveDetailsPage> {
 
   Future<void> _fetchDriverDetails() async {
     try {
-      final driverDetails = await _apiService.fetchDriverById(widget.drive.driverId);
+      final driverDetails =
+          await _apiService.fetchDriverById(widget.drive.driverId);
 
       if (driverDetails != null) {
         setState(() {
-          driverFullName = '${driverDetails['firstName']} ${driverDetails['name']}';
+          driverFullName =
+              '${driverDetails['firstName']} ${driverDetails['name']}';
           driverEmail = driverDetails['email'];
           driverPhone = driverDetails['phone'];
           avgNote = driverDetails['avgNote']?.toDouble();
@@ -57,14 +59,23 @@ class _DriveDetailsPageState extends State<DriveDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Drive Details'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.black,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Text(
+              'Drive Details',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 20),
             _buildDetailsSection(),
             const SizedBox(height: 20),
             _buildCarDetailsSection(),
@@ -79,30 +90,37 @@ class _DriveDetailsPageState extends State<DriveDetailsPage> {
   }
 
   Widget _buildDetailsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        DetailItem(
-          icon: Icons.info,
-          title: widget.drive.description,
-          subtitle: 'Description',
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DetailItem(
+              icon: Icons.info,
+              title: widget.drive.description,
+              subtitle: 'Description',
+            ),
+            DetailItem(
+              icon: FontAwesomeIcons.coins,
+              title: '${widget.drive.price.toStringAsFixed(2)} MAD',
+              subtitle: 'Price',
+            ),
+            DetailItem(
+              icon: Icons.people,
+              title: 'Places disponibles: ${widget.drive.seating}',
+              subtitle: 'Seats',
+            ),
+            DetailItem(
+              icon: Icons.calendar_today,
+              title: 'Date de départ: ${widget.drive.deptime.toLocal()}',
+              subtitle: 'Departure Date',
+            ),
+          ],
         ),
-        DetailItem(
-          icon: FontAwesomeIcons.coins,
-          title: '${widget.drive.price.toStringAsFixed(2)} MAD',
-          subtitle: 'Price',
-        ),
-        DetailItem(
-          icon: Icons.people,
-          title: 'Places disponibles: ${widget.drive.seating}',
-          subtitle: 'Seats',
-        ),
-        DetailItem(
-          icon: Icons.calendar_today,
-          title: 'Date de départ: ${widget.drive.deptime.toLocal()}',
-          subtitle: 'Departure Date',
-        ),
-      ],
+      ),
     );
   }
 
@@ -111,71 +129,57 @@ class _DriveDetailsPageState extends State<DriveDetailsPage> {
       return const SizedBox.shrink();
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 6,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Informations sur la voiture',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          const SizedBox(height: 8),
-          Text('La marque: ${widget.drive.car!.manufacturer}'),
-          Text('Immatriculation: ${widget.drive.car!.licencePlate}'),
-        ],
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Car Details',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            const SizedBox(height: 8),
+            Text('Make: ${widget.drive.car!.manufacturer}'),
+            Text('License Plate: ${widget.drive.car!.licencePlate}'),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildDriverInfoSection() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 6,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Informations du conducteur',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          const SizedBox(height: 8),
-          Text('Nom: ${driverFullName ?? 'Loading...'}'),
-          Text('Email: ${driverEmail ?? 'Loading...'}'),
-          Text('Téléphone: ${driverPhone ?? 'Loading...'}'),
-          const SizedBox(height: 8),
-          avgNote != null
-              ? Row(
-                  children: [
-                    Text(
-                      '⭐ ${avgNote!.toStringAsFixed(1)}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                )
-              : const Text('Note Moyenne: Non disponible'),
-        ],
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Driver Information',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            const SizedBox(height: 8),
+            Text('Name: ${driverFullName ?? 'Loading...'}'),
+            Text('Email: ${driverEmail ?? 'Loading...'}'),
+            Text('Phone: ${driverPhone ?? 'Loading...'}'),
+            const SizedBox(height: 8),
+            avgNote != null
+                ? Row(
+                    children: [
+                      Text(
+                        '⭐ ${avgNote!.toStringAsFixed(1)}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  )
+                : const Text('Average Rating: Not Available'),
+          ],
+        ),
       ),
     );
   }
@@ -187,10 +191,13 @@ class _DriveDetailsPageState extends State<DriveDetailsPage> {
           // Implement reservation logic
         },
         icon: const Icon(Icons.check_circle),
-        label: const Text('Réserver ce trajet'),
+        label: const Text('Reserve Drive'),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.green,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
@@ -213,7 +220,11 @@ class DetailItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: Colors.blue),
+        CircleAvatar(
+          radius: 20,
+          backgroundColor: Colors.black,
+          child: Icon(icon, color: Colors.white),
+        ),
         const SizedBox(width: 10),
         Expanded(
           child: ListTile(

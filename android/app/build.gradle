@@ -27,7 +27,7 @@ flutter {
     source = "../.."
 }
 
-dependencies {
-    implementation 'com.google.android.gms:play-services-base:18.2.0'
-    implementation 'com.stripe:stripe-android:20.19.0' // Stripe SDK
-}
+// dependencies {
+//     implementation 'com.google.android.gms:play-services-base:18.2.0'
+//     implementation 'com.stripe:stripe-android:20.19.0' // Stripe SDK
+// }
