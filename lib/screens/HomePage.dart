@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   int _seats = 1;
   List<String> _startCities = [];
   List<String> _endCities = [];
-  int? userId; // Nullable userId
+  int? userId;
 
   @override
   void initState() {
@@ -32,7 +32,6 @@ class _HomePageState extends State<HomePage> {
     try {
       final drives = await _apiService.fetchAllDrives();
       setState(() {
-        // Extract unique start and end cities
         _startCities = drives.map((drive) => drive['pickup']).toSet().cast<String>().toList();
         _endCities = drives.map((drive) => drive['destination']).toSet().cast<String>().toList();
       });
@@ -70,7 +69,6 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
-    // Navigate to SearchResultsPage with the user inputs
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -79,7 +77,7 @@ class _HomePageState extends State<HomePage> {
           endLocation: _selectedEndCity!,
           date: _selectedDate!,
           seats: _seats,
-          userId: userId!, // Pass the userId
+          userId: userId!,
         ),
       ),
     );
@@ -87,7 +85,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Safely retrieve arguments
     userId = ModalRoute.of(context)?.settings.arguments as int?;
 
     return Scaffold(
@@ -110,7 +107,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 40),
 
-              // Start City Dropdown
+              // Dropdown for Start City
               DropdownButtonFormField<String>(
                 value: _selectedStartCity,
                 items: _startCities.map((city) {
@@ -138,7 +135,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 20),
 
-              // End City Dropdown
+              // Dropdown for End City
               DropdownButtonFormField<String>(
                 value: _selectedEndCity,
                 items: _endCities.map((city) {

@@ -27,23 +27,23 @@ class ReservationService {
           final reservationDto = ReservationDto.fromJson(data);
 
           // Fetch associated Drive and User
-          try {
-            final drive = await fetchDriveById(reservationDto.driveId);
-            final user = await fetchUserById(reservationDto.userId);
+          final drive = reservationDto.driveId != null
+              ? await fetchDriveById(reservationDto.driveId!)
+              : throw Exception(
+                  'Drive ID is null for reservation ID ${reservationDto.id}');
 
-            return Reservation(
-              id: reservationDto.id,
-              seats: reservationDto.seats,
-              status: reservationDto.status,
-              drive: drive,
-              user: user,
-            );
-          } catch (error) {
-            print(
-                'Error fetching associated Drive or User for reservation ID ${reservationDto.id}: $error');
-            throw Exception(
-                'Failed to fetch Drive or User details for reservation ID ${reservationDto.id}');
-          }
+          final user = reservationDto.userId != null
+              ? await fetchUserById(reservationDto.userId!)
+              : throw Exception(
+                  'User ID is null for reservation ID ${reservationDto.id}');
+
+          return Reservation(
+            id: reservationDto.id,
+            seats: reservationDto.seats,
+            status: reservationDto.status ?? 'Unknown',
+            drive: drive,
+            user: user,
+          );
         }).toList(),
       );
 
@@ -58,6 +58,7 @@ class ReservationService {
     throw Exception('Failed to fetch reservations for user ID $userId');
   }
 }
+
 
 
   // Create payment intent for reservation
@@ -101,34 +102,7 @@ class ReservationService {
     }
   }
 
-  Future<List<Reservation>> getReservationsByDriveId(int driveId) async {
-    final String url = '$baseUrl/reservations/drive/$driveId';
-
-    try {
-      final response = await http.get(Uri.parse(url), headers: headers);
-
-      if (response.statusCode == 200) {
-        final List<dynamic> jsonData = jsonDecode(response.body);
-
-        if (jsonData.isEmpty) {
-          return [];
-        }
-
-        return jsonData.map((data) {
-          if (data is Map<String, dynamic>) {
-            return Reservation.fromJson(data);
-          } else {
-            throw Exception("Invalid data format: $data");
-          }
-        }).toList();
-      } else {
-        throw Exception('Failed to fetch reservations for drive ID $driveId');
-      }
-    } catch (error) {
-      throw Exception('Error while fetching reservations: $error');
-    }
-  }
-
+  
   
 
 // Fetch User by ID
@@ -144,7 +118,6 @@ Future<User> fetchUserById(int userId) async {
 }
 
 
-  // Private method to fetch user by ID
   // Fetch Drive by ID
 Future<Drive> fetchDriveById(int driveId) async {
   final url = Uri.parse('${ApiService.baseUrl}/drives/findDriveById/$driveId');

@@ -5,53 +5,42 @@ class Reservation {
   final int id;
   final int seats;
   final String status;
-  final Drive drive; // Associated Drive
-  final User user; // Associated User
+  final int? userId; // Add userId field
+  User? user; // Make user mutable
+  final Drive? drive; // Associated Drive (optional)
+  final dynamic bill; // Placeholder for Bill (optional)
 
   Reservation({
     required this.id,
     required this.seats,
     required this.status,
-    required this.drive,
-    required this.user,
+    this.userId,
+    this.user,
+    this.drive,
+    this.bill,
   });
 
   factory Reservation.fromJson(Map<String, dynamic> json) {
     return Reservation(
       id: json['id'] ?? 0,
-      seats: json['reservedSeats'] ?? 0,
+      seats: json['seats'] ?? 0,
       status: json['status'] ?? 'Unknown',
-      drive: json['drive'] != null
-          ? Drive.fromJson(json['drive'])
-          : Drive(
-              id: 0,
-              pickup: 'Unknown',
-              destination: 'Unknown',
-              deptime: DateTime.now(),
-              price: 0.0,
-              seating: 0,
-              description: 'No description',
-              user: User(
-                id: 0,
-                name: 'Unknown',
-                firstName: '',
-                email: '',
-                phone: '',
-                role: 'Unknown',
-                reviews: [],
-              ),
-            ),
-      user: json['user'] != null
-          ? User.fromJson(json['user'])
-          : User(
-              id: 0,
-              name: 'Unknown',
-              firstName: '',
-              email: '',
-              phone: '',
-              role: 'Unknown',
-              reviews: [],
-            ),
+      userId: json['userId'] as int?, // Map userId from JSON
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
+      drive: json['drive'] != null ? Drive.fromJson(json['drive']) : null,
+      bill: json['bill'], // Leave it as dynamic for now
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'seats': seats,
+      'status': status,
+      'userId': userId, // Include userId in JSON
+      'user': user?.toJson(),
+      'drive': drive?.toJson(),
+      'bill': bill,
+    };
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/MyoffersPage.dart';
 import 'package:flutter_application_1/screens/reservation_page.dart';
 import 'package:flutter_application_1/services/ApiService.dart';
 import 'package:flutter_application_1/services/reservation_service.dart';
@@ -26,10 +27,17 @@ class DashboardWidget extends StatelessWidget {
                 Navigator.pushNamed(context, '/my-conversations',
                     arguments: userId);
               }),
-              if (isDriver)
-                _menuOption(context, Icons.local_offer, "My Offers", () {
-                  Navigator.pushNamed(context, '/driverpage', arguments: userId);
-                }),
+              _menuOption(context, Icons.local_offer, "My Offers", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyOffersPage(
+                      userId: userId,
+                      role: isDriver ? "Driver" : "Passenger",
+                    ),
+                  ),
+                );
+              }),
               _menuOption(context, Icons.calendar_today, "My Reservations", () {
                 Navigator.push(
                   context,

@@ -23,6 +23,8 @@ class ApiService {
 
   
 
+  
+
   // Fetch driver details by ID
   Future<Map<String, dynamic>> fetchDriverById(int driverId) async {
     final response = await http.get(Uri.parse('$baseUrl/user/$driverId'));
@@ -90,20 +92,24 @@ class ApiService {
 }
 
 Future<Drive> getDriveDetails(int driveId) async {
-  final String url = '$baseUrl/findDriveById/$driveId';
-
+  final String url = '$baseUrl/drives/findDriveById/$driveId'; // Corrected path
   try {
     final response = await http.get(Uri.parse(url), headers: headers);
 
     if (response.statusCode == 200) {
-      return Drive.fromJson(jsonDecode(response.body));
+      final jsonData = jsonDecode(response.body);
+      return Drive.fromJson(jsonData);
+    } else if (response.statusCode == 404) {
+      throw Exception('Drive not found with ID: $driveId');
     } else {
-      throw Exception('Failed to fetch drive details');
+      throw Exception('Failed to fetch drive details. Status: ${response.statusCode}, Body: ${response.body}');
     }
   } catch (error) {
     throw Exception('Error fetching drive details: $error');
   }
 }
+
+
 
 
 
@@ -201,28 +207,21 @@ Future<User> getDriverById(int driverId) async {
 
 // Fetch reservations by drive ID
 Future<List<Reservation>> getReservationsByDriveId(int driveId) async {
-  final String url = '$baseUrl/reservations/drive/$driveId';
-
+  final String url = '$baseUrl/drives/drive/$driveId/reservations'; // Corrected path
   try {
-    print("Request URL: $url");
     final response = await http.get(Uri.parse(url), headers: headers);
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
-      print("Reservations API Response: $jsonData");
-
-      return jsonData.map((data) {
-        return Reservation.fromJson(data);
-      }).toList();
+      return jsonData.map((data) => Reservation.fromJson(data)).toList();
     } else {
-      print("Error Response: ${response.statusCode} - ${response.body}");
       throw Exception('Failed to fetch reservations for drive ID $driveId');
     }
   } catch (error) {
-    print("Error while fetching reservations: $error");
     throw Exception('Error fetching reservations: $error');
   }
 }
+
 
 
 

@@ -3,7 +3,7 @@ import 'package:flutter_application_1/screens/Dashbord.dart';
 import 'package:intl/intl.dart'; // Pour formater les dates
 import '../services/ApiService.dart';
 import '../models/DriveModel.dart';
-import 'ManageReservationPage.dart'; // Import de ManageReservationPage
+import 'OfferDetailsPage.dart'; // Import de ManageReservationPage
 import 'CreateDrivePage.dart';
 
 class DriverHomePage extends StatefulWidget {
@@ -92,11 +92,12 @@ class _DriverHomePageState extends State<DriverHomePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ManageReservationPage(
+                                  builder: (context) => OfferDetailsPage(
                                     driveId: drive.id,
                                     driveDetails:
                                         '${drive.pickup} → ${drive.destination}',
                                     basePrice: drive.price,
+                                    driverId: widget.driverId,
                                   ),
                                 ),
                               );

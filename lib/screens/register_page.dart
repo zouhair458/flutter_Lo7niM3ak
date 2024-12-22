@@ -47,10 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
           builder: (context) => LoginPage(apiService: widget.apiService),
         ),
       );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to register: $e")),
-      );
+    
     } finally {
       setState(() {
         _isLoading = false;

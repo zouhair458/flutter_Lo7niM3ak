@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/ChatPage.dart';
 import 'package:flutter_application_1/screens/DriverHomePage.dart';
 import 'package:flutter_application_1/screens/HomePage.dart';
 import 'package:flutter_application_1/screens/ProfilePage.dart';
@@ -37,6 +38,20 @@ class MyApp extends StatelessWidget {
         '/my-conversations': (context) => MyConversationsPage(
               userId: ModalRoute.of(context)?.settings.arguments as int,
             ),
+        '/chat': (context) {
+  final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+  if (args == null || args['senderId'] == null || args['receiverId'] == null || args['receiverName'] == null) {
+    throw Exception('Invalid arguments for /chat route. Ensure senderId, receiverId, and receiverName are provided.');
+  }
+
+  return ChatPage(
+    senderId: args['senderId'],
+    receiverId: args['receiverId'],
+    receiverName: args['receiverName'],
+  );
+},
+   
       },
     );
   }

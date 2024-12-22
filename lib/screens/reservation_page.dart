@@ -102,13 +102,13 @@ class _ReservationPageState extends State<ReservationPage> {
                           margin: const EdgeInsets.all(8.0),
                           child: ListTile(
                             title: Text(
-                              '${reservation.drive.pickup} → ${reservation.drive.destination}',
+                              '${reservation.drive?.pickup} → ${reservation.drive?.destination}',
                               style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text(
-                              'Date: ${reservation.drive.deptime.toLocal().toString().substring(0, 16)}\n'
+                              'Date: ${reservation.drive?.deptime.toLocal().toString().substring(0, 16)}\n'
                               'Seats: ${reservation.seats}\n'
-                              'Total Price: MAD ${reservation.drive.price * reservation.seats}\n'
+                              'Total Price: MAD ${reservation.drive!.price * reservation.seats}\n'
                               'Status: ${reservation.status}',
                               style: const TextStyle(fontSize: 16),
                             ),
