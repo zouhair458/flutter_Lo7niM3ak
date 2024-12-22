@@ -62,7 +62,7 @@ class _MyConversationsPageState extends State<MyConversationsPage> {
                         backgroundColor: Colors.blue,
                         child: Icon(Icons.person, color: Colors.white),
                       ),
-                      title: Text('${user.firstName} ${user.name}'),
+                      title: Text('${user.firstName} ${user.lastName}'),
                       subtitle: Text(user.email),
                       onTap: () {
                         Navigator.push(
@@ -71,7 +71,7 @@ class _MyConversationsPageState extends State<MyConversationsPage> {
                             builder: (context) => ChatPage(
                               senderId: widget.userId,
                               receiverId: user.id,
-                              receiverName: '${user.firstName} ${user.name}',
+                              receiverName: '${user.firstName} ${user.lastName}',
                             ),
                           ),
                         );

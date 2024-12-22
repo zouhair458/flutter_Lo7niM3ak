@@ -83,7 +83,7 @@ class _OfferDetailsPageState extends State<OfferDetailsPage> {
       arguments: {
         'senderId': widget.driverId, // Conducteur connecté
         'receiverId': reservationUser.id, // Client ayant fait la réservation
-        'receiverName': '${reservationUser.firstName} ${reservationUser.lastName}',
+        'receiverName': '${reservationUser.firstName} ',
       },
     );
   } else {
@@ -156,7 +156,7 @@ class _OfferDetailsPageState extends State<OfferDetailsPage> {
                             margin: const EdgeInsets.symmetric(vertical: 8.0),
                             child: ListTile(
                               title: Text(
-                                '${user?.firstName ?? 'Unknown'} ${user?.lastName ?? 'Unknown'}',
+                                '${user?.firstName ?? 'Unknown'} ${user?.name ?? 'Unknown'}',
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
